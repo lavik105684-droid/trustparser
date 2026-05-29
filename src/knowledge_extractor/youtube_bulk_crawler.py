@@ -27,7 +27,8 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
         url += "&sp=EgIYAw%253D%253D"  # Filter for Long (>20 mins)
         
     ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-    cmd = ["curl.exe", "-s", "-L", "-A", ua, url]
+    curl_cmd = "curl" if os.name == "posix" else "curl.exe"
+    cmd = [curl_cmd, "-s", "-L", "-A", ua, url]
     
     results = []
     try:
@@ -129,8 +130,8 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=5, max_shorts=
     discovered_videos = []
     discovered_shorts = []
     
-    # 1. Search long videos with self-healing fallback threshold (40m -> 20m -> 12m)
-    thresholds = [40, 20, 12]
+    # 1. Search long videos with self-healing fallback threshold
+    thresholds = [20, 15, 10]
     for min_mins in thresholds:
         print(f"\n[CRAWLER] Попытка поиска длинных видео с порогом >= {min_mins} минут...")
         for idx, q in enumerate(queries_videos):
