@@ -15,8 +15,20 @@ def ensure_dirs():
     os.makedirs(LOCAL_KB_DIR, exist_ok=True)
     os.makedirs(LOCAL_SKILLS_DIR, exist_ok=True)
 
-def generate_ai_tools_directory():
-    content = """# 🛠️ Каталог ИИ-Инструментов для Монетизации (2026)
+def extract_section(synthesis, start_marker, end_marker):
+    if start_marker in synthesis and end_marker in synthesis:
+        try:
+            return synthesis.split(start_marker)[1].split(end_marker)[0].strip()
+        except Exception:
+            pass
+    return None
+
+def generate_ai_tools_directory(synthesis):
+    extracted = extract_section(synthesis, "[START_TOOLS_SECTION]", "[END_TOOLS_SECTION]")
+    if extracted:
+        content = f"# 🛠️ Каталог ИИ-Инструментов для Монетизации (2026)\n\nТеги: #AI_Tools #Content_Factory #Automation #Pricing_Hacks\n\n---\n\n{extracted}"
+    else:
+        content = """# 🛠️ Каталог ИИ-Инструментов для Монетизации (2026)
 
 > [!NOTE]
 > Сформировано на основе перекрестного анализа 10 источников с YouTube. Здесь собраны 20 ключевых инструментов, распределенных по категориям применения.
@@ -90,8 +102,12 @@ def generate_ai_tools_directory():
         f.write(content)
     print("[GENERATOR] Создан файл: ai_tools_directory.md")
 
-def generate_n8n_docker_manual():
-    content = """# ⚙️ Мануал: Локальный n8n в Docker и Конфиги Схем
+def generate_n8n_docker_manual(synthesis):
+    extracted = extract_section(synthesis, "[START_TECHNICAL_SECTION]", "[END_TECHNICAL_SECTION]")
+    if extracted:
+        content = f"# ⚙️ Мануал: Локальный n8n в Docker и Конфиги Схем\n\nТеги: #n8n #Docker #Automation #JSON #Self_Hosted\n\n---\n\n{extracted}"
+    else:
+        content = """# ⚙️ Мануал: Локальный n8n в Docker и Конфиги Схем
 
 > [!IMPORTANT]
 > n8n является центральным звеном ("отверткой") для построения фабрики авто-контента. Это позволяет сэкономить до 90% токенов за счет прямой маршрутизации данных без постоянного использования Gemini/GPT API для мелких операций.
@@ -238,8 +254,53 @@ docker-compose up -d
         f.write(content)
     print("[GENERATOR] Создан файл: n8n_docker_manual.md")
 
-def generate_monetization_playbook():
-    content = """# 💰 Плейбук: Стратегии Монетизации ИИ в 2026 году
+def generate_monetization_playbook(synthesis):
+    extracted = extract_section(synthesis, "[START_CASES_SECTION]", "[END_CASES_SECTION]")
+    if extracted:
+        content = f"# 💰 Плейбук: Кейсы и Модели Заработка с ИИ (2026)\n\nТеги: #Monetization #Cases #Financial_Math #AI_Automation_Agency #CPA\n\n---\n\n{extracted}"
+    else:
+        content = """# 💰 Плейбук: Стратегии Монетизации ИИ в 2026 году
+
+> [!TIP]
+> Вся работа с ИИ должна строиться вокруг решения конкретных болей конечного клиента. Продавать нужно не технологии, а готовую выгоду, экономию времени или прямой трафик.
+
+Теги: #Monetization #AI_Automation_Agency #CPA #YouTube_Shorts #SMM_AI
+
+---
+
+## 🏢 1. AI Automation Agency (B2B-автоматизации)
+* **Целевой клиент:** Локальный бизнес (юристы, клиники, агентства недвижимости).
+* **Что продаем:** Внедрение ИИ-ботов на сайты для квалификации лидов, интеграция n8n-сценариев для авто-обработки документов, CRM автоматизации.
+* **Чек:** Ретейнер от **$1,000 до $3,000 в месяц** за ведение, поддержка или разовый проект внедрения от **$5,000**.
+* **Результат:** Сокращение ручных операций менеджеров на 80%.
+
+---
+
+## 📽️ 2. Faceless YouTube Shorts & CPA (Вирусный блогинг)
+* **Ниши:** Личные финансы, ИИ-новости, исторические факты, психология отношений (высокий RPM AdSense).
+* **Технология:** Скрипты из Claude/ChatGPT -> озвучка в ElevenLabs -> генерация визуала в Midjourney -> ИИ-монтаж в Opus Clips / CapCut / Viblo.
+* **Монетизация:** 
+  1. YouTube AdSense (трафик Tier-1 стран приносит хороший доход).
+  2. CPA-партнерки (ClickBank, Digistore24) - ссылки на продукты размещаются в описании и закрепленных комментариях.
+  3. Прямые музыкальные и брендовые интеграции.
+
+---
+
+## 🎨 3. Рекламное ИИ-агентство (AI Ad Agency)
+* **Целевой клиент:** Бренды одежды, e-commerce проекты, разработчики приложений.
+* **Что продаем:** Фотосессии продуктов без физической студии (через Adobe Firefly / Midjourney) и кинематографичные вирусные видео-креативы (через Cling 3.0 / Seance).
+* **Чек:** Зависит от масштаба, от **$2,000** за пакет креативов для стартапов до **$50,000+** для крупных брендов.
+
+---
+
+## 📱 4. SMM-управление на ИИ (Social Media Management)
+* **Целевой клиент:** Эксперты, инфобизнесмены, фаундеры стартапов.
+* **Что продаем:** Написание прогревов, каруселей, хуков и постов для LinkedIn / Twitter / Telegram с помощью инструментов Taplio и Hypefury.
+* **Чек:** От **$1,500** до **$5,000 в месяц** за ведение одного профиля. При использовании ИИ один менеджер может вести до 10-15 клиентов без потери качества!
+"""
+    with open(os.path.join(LOCAL_KB_DIR, "monetization_playbook.md"), "w", encoding="utf-8") as f:
+        f.write(content)
+    print("[GENERATOR] Создан файл: monetization_playbook.md")"# 💰 Плейбук: Стратегии Монетизации ИИ в 2026 году
 
 > [!TIP]
 > Вся работа с ИИ должна строиться вокруг решения конкретных болей конечного клиента. Продавать нужно не технологии, а готовую выгоду, экономию времени или прямой трафик.
@@ -443,9 +504,20 @@ def sync_to_external():
 
 def main():
     ensure_dirs()
-    generate_ai_tools_directory()
-    generate_n8n_docker_manual()
-    generate_monetization_playbook()
+    
+    # Read synthesis content if available
+    synthesis_path = os.path.join("scratch", "notebooklm_synthesis.md")
+    synthesis_content = ""
+    if os.path.exists(synthesis_path):
+        try:
+            with open(synthesis_path, "r", encoding="utf-8") as f:
+                synthesis_content = f.read()
+        except Exception:
+            pass
+            
+    generate_ai_tools_directory(synthesis_content)
+    generate_n8n_docker_manual(synthesis_content)
+    generate_monetization_playbook(synthesis_content)
     generate_knowledge_map()
     generate_skills()
     sync_to_external()
