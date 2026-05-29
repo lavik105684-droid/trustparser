@@ -1,0 +1,27 @@
+{
+  "skill_name": "n8n_automation_expert",
+  "version": "1.0.0",
+  "description": "Базовый набор директив, лучших практик и JSON-шаблонов для развертывания локальной n8n автоматизации контентных конвейеров.",
+  "category": "automation",
+  "context_requirements": [
+    "docker>=20.10.0",
+    "docker-compose>=1.29.0",
+    "n8n>=1.0.0"
+  ],
+  "agent_directives": [
+    "При запуске n8n локально через Docker всегда монтируйте именованный том (volume) для сохранения пользовательских данных и сессий.",
+    "В нодах работы с LLM всегда применяйте структурированные промпты по схеме MAPS для гарантированного получения качественного результата.",
+    "Для экономии лимитов API используйте RSS-ридеры и триггеры расписания, чтобы обрабатывать статьи пачками, отсеивая дубликаты."
+  ],
+  "code_snippets": [
+    {
+      "title": "docker-compose.yml для n8n",
+      "language": "yaml",
+      "code": "version: '3.8'\nvolumes:\n  n8n_data:\nservices:\n  n8n:\n    image: docker.n8n.io/n8nio/n8n:latest\n    container_name: n8n_ai_factory\n    restart: always\n    ports:\n      - \"5678:5678\"\n    environment:\n      - N8N_HOST=localhost\n      - N8N_PORT=5678\n      - N8N_PROTOCOL=http\n      - NODE_ENV=production\n      - WEBHOOK_URL=http://localhost:5678/\n    volumes:\n      - n8n_data:/home/node/.n8n"
+    }
+  ],
+  "evaluation_criteria": [
+    "Валидация файла docker-compose на корректность yaml-структуры.",
+    "Проверка работоспособности JSON-структуры нод при импорте."
+  ]
+}

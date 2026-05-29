@@ -1,0 +1,30 @@
+{
+  "skill_name": "fastapi_expert",
+  "version": "1.0.0",
+  "description": "Свод правил, лучших практик и готовых сниппетов для разработки высокопроизводительных и надежных асинхронных API на базе FastAPI.",
+  "category": "backend",
+  "context_requirements": [
+    "fastapi>=0.100.0",
+    "pydantic>=2.0.0",
+    "uvicorn>=0.20.0",
+    "websockets>=11.0.0"
+  ],
+  "agent_directives": [
+    "Используйте Pydantic модели (BaseModel) с явным указанием типов для валидации и сериализации любых входящих и выходящих данных.",
+    "Всегда применяйте паттерн внедрения зависимостей Depends для безопасного управления жизненным циклом тяжелых ресурсов (соединения с базами данных, HTTP-сессии).",
+    " WebSocket-соединения в обязательном порядке оборачивайте в блоки try-except с перехватом исключения WebSocketDisconnect для своевременного удаления сокета из менеджера сессий и предотвращения утечек памяти.",
+    "Для некритичных фоновых операций (отправка логов, дисковая запись, уведомления) используйте асинхронные фоновые задачи BackgroundTasks, запускаемые сразу после успешной отправки HTTP-ответа пользователю."
+  ],
+  "code_snippets": [
+    {
+      "title": "Полный шаблон FastAPI приложения с Depends и WebSockets",
+      "language": "python",
+      "code": "from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, HTTPException, status\nfrom pydantic import BaseModel\nimport json\n\napp = FastAPI(title='Pixel Office Swarm Engine', version='1.0.0')\n\n# Схема данных Pydantic\nclass AgentTask(BaseModel):\n    agent: str\n    task: str\n    status: str\n\n# Имитация зависимости подключения к БД / ресурсу\ndef get_shared_database():\n    db_conn = {'session_state': 'active'}\n    try:\n        yield db_conn\n    finally:\n        # Гарантированное закрытие соединения после отправки ответа\n        db_conn['session_state'] = 'closed'\n\n# Асинхронный Менеджер WebSocket-подключений\nclass WebSocketConnectionManager:\n    def __init__(self):\n        self.active_connections: list[WebSocket] = []\n\n    async def connect(self, websocket: WebSocket):\n        await websocket.accept()\n        self.active_connections.append(websocket)\n\n    def disconnect(self, websocket: WebSocket):\n        if websocket in self.active_connections:\n            self.active_connections.remove(websocket)\n\n    async def broadcast(self, message: dict):\n        for connection in self.active_connections:\n            try:\n                await connection.send_json(message)\n            except Exception:\n                pass\n\nmanager = WebSocketConnectionManager()\n\n@app.websocket('/ws')\nasync def websocket_endpoint(websocket: WebSocket):\n    await manager.connect(websocket)\n    try:\n        while True:\n            # Ожидание входящих сообщений от клиента\n            data = await websocket.receive_text()\n            await websocket.send_text(f'Эхо-ответ от сервера: {data}')\n    except WebSocketDisconnect:\n        manager.disconnect(websocket)\n\n@app.post('/api/task', status_code=status.HTTP_201_CREATED)\nasync def register_task(task_payload: AgentTask, db = Depends(get_shared_database)):\n    if not task_payload.agent:\n        raise HTTPException(status_code=400, detail='Имя агента не может быть пустым')\n    return {'status': 'success', 'database_state': db['session_state']}\n"
+    }
+  ],
+  "evaluation_criteria": [
+    "Валидация синтаксического дерева кода (AST) на предмет отсутствия ошибок импорта и блокирующих вызовов (QA Quentin).",
+    "Проверка наличия обработчика WebSocketDisconnect во всех активных WebSocket-эндпоинтах.",
+    "Валидация типов данных входящих аргументов Pydantic-схемы."
+  ]
+}

@@ -1,0 +1,23 @@
+# Local environment variables
+.env
+config_pipeline.env
+*.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local data & temporary caches
+scratch/yt_cache/
+_core/logs/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

@@ -1,0 +1,30 @@
+{
+  "skill_name": "gamebuddy_orchestrator",
+  "version": "1.0.0",
+  "description": "Спецификация, директивы поведения и готовые шаблоны для сборки автономного асинхронного комментирования геймплея в реальном времени (GameBuddy).",
+  "category": "backend",
+  "context_requirements": [
+    "opencv-python>=4.7.0",
+    "numpy>=1.24.0",
+    "fastapi>=0.100.0",
+    "websockets>=11.0.0"
+  ],
+  "agent_directives": [
+    "Реализуйте асинхронный и неблокирующий захват экрана с помощью библиотеки OpenCV или специализированных системных вызовов в фоновом потоке.",
+    "Используйте легковесные Vision-модели (например, Gemini 3.5 Flash) для экспресс-анализа кадра с интервалом не чаще 2-3 раз в секунду во избежание перерасхода бюджета.",
+    "Обязательно проверяйте системный остаток квоты токенов перед отправкой кадра в ИИ-анализатор: если лимит упал до 20% или ниже, мгновенно замораживайте отправку тяжелых Vision-запросов и переходите на воспроизведение текстовых шаблонов из локального кэша.",
+    "Связывайте агента анализа экрана и агента озвучки через легковесный WebSocket-мост для мгновенной доставки JSON-метаданных с задержкой не более 100 мс."
+  ],
+  "code_snippets": [
+    {
+      "title": "Асинхронный бесконечный захват кадров экрана и стриминг метаданных",
+      "language": "python",
+      "code": "import cv2\nimport numpy as np\nimport asyncio\nimport time\n\nclass GameScreenScraper:\n    def __init__(self, fps=3):\n        self.fps = fps\n        self.delay = 1.0 / fps\n        self.running = False\n\n    async def start_capture_loop(self, on_frame_callback):\n        self.running = True\n        print('[SCRAPER] Запуск цикла захвата экрана...')\n        while self.running:\n            start_time = time.time()\n            \n            # Имитация захвата игрового кадра (1280x720 RGB)\n            fake_frame = np.zeros((720, 1280, 3), dtype=np.uint8)\n            \n            # Имитация добавления игрового интерфейса (HP бар)\n            cv2.rectangle(fake_frame, (50, 50), (250, 80), (0, 0, 255), -1)\n            \n            # Вызов асинхронного обработчика кадра для Vision API\n            await on_frame_callback(fake_frame)\n            \n            elapsed = time.time() - start_time\n            sleep_time = max(0, self.delay - elapsed)\n            await asyncio.sleep(sleep_time)\n\n    def stop(self):\n        self.running = False\n"
+    }
+  ],
+  "evaluation_criteria": [
+    "Оценка времени обработки кадра: полный цикл (захват -> распознавание -> передача) не должен превышать 300 мс (QA Quentin).",
+    "Проверка перехода в аварийный режим паузы/кэша при ручной эмуляции 20% остатка токенов в workflow_state.json.",
+    "Валидация очистки памяти: успешное освобождение видеоустройств при выходе из захвата."
+  ]
+}

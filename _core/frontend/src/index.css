@@ -1,0 +1,293 @@
+/* EXPLICIT VANILLA CSS RESET & LAYOUT SYSTEMS */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* Global resets for professional light mode */
+body {
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f8 !important; /* Soft light grey/blue background */
+  color: #1c1917 !important; /* High-contrast dark charcoal text */
+}
+
+/* Base structural layout */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+/* Header styling */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.dashboard-title-area h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-title-area p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 6px 0 0 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.system-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #15803d;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.status-dot-ping {
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background-color: #22c55e;
+}
+
+/* Real 3-Column Responsive CSS Grid */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+/* Clean, modern Agent status cards */
+.agent-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.agent-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+.agent-card.active-card {
+  border-color: #bbf7d0;
+  background-color: #f8fafc;
+}
+
+.agent-card.idle-card {
+  border-color: #fed7aa;
+  background-color: #ffffff;
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.agent-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.agent-avatar-box {
+  font-size: 24px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.agent-meta-role {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 3px;
+  display: block;
+}
+
+/* Status Badges */
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.status-badge.active-badge {
+  color: #15803d;
+  background-color: #dcfce7;
+  border-color: #bbf7d0;
+}
+
+.status-badge.idle-badge {
+  color: #b45309;
+  background-color: #ffedd5;
+  border-color: #fed7aa;
+}
+
+/* Task Operations Box */
+.task-box {
+  background-color: #f8fafc;
+  border: 1px solid #edf2f7;
+  padding: 16px;
+  border-radius: 8px;
+  flex-grow: 1;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.task-box-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.task-box-content {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Progress bar */
+.progress-container {
+  width: 100%;
+  background-color: #e2e8f0;
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.progress-bar-fill.active-fill {
+  background-color: #22c55e;
+  width: 75%;
+}
+
+.progress-bar-fill.idle-fill {
+  background-color: #3b82f6;
+  width: 35%;
+}
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #94a3b8;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+
+/* Console logs area */
+.logs-section {
+  border-top: 2px solid #edf2f7;
+  padding-top: 24px;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.logs-header h2 {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logs-path-tag {
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.console-terminal {
+  background-color: #0f172a; /* Slate Dark for terminal feel */
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 16px;
+  height: 180px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.console-cli-prefix {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.console-body {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}

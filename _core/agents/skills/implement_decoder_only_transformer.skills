@@ -1,0 +1,66 @@
+{
+  "skill_name": "implement_decoder_only_transformer",
+  "version": "1.0.0",
+  "description": "Обучает созданию Decoder-Only Transformer (архитектура GPT) на уровне символов с использованием PyTorch, включая механизмы внимания, позиционные вложения, многоголовое внимание, сети прямого распространения, остаточные соединения и нормализацию слоев. Включает предобучение на датасете Tiny Shakespeare и генерацию текста.",
+  "category": "backend",
+  "context_requirements": [
+    "torch",
+    "torch.nn",
+    "torch.nn.functional",
+    "torch.optim"
+  ],
+  "agent_directives": [
+    "1. Инициализируйте проект Python и убедитесь, что PyTorch установлен. Загрузите датасет 'tiny_shakespeare.txt' в корневую директорию проекта.",
+    "2. Реализуйте функции 'encode' и 'decode' для токенизации текста на уровне символов. Определите 'vocab_size'.",
+    "3. Подготовьте данные: разделите на обучающую и валидационную выборки. Реализуйте функцию 'get_batch(split)' для эффективного батчирования данных, возвращающую 'xb' (входы) и 'yb' (цели) тензоры с учетом 'block_size' и 'batch_size'.",
+    "4. Реализуйте базовую модель 'BigramLanguageModel' (nn.Module). Включите 'token_embedding_table' (nn.Embedding). Метод 'forward' должен вычислять логиты и, при наличии 'targets', кросс-энтропийную функцию потерь (F.cross_entropy). Метод 'generate' должен предсказывать новые токены, используя только последний токен в контексте.",
+    "5. Введите гиперпараметры: 'batch_size', 'block_size', 'n_embed', 'n_head', 'n_layer', 'dropout', 'learning_rate'. Определите 'device' (CPU/CUDA).",
+    "6. Модифицируйте модель для включения позиционных вложений (nn.Embedding для 'position_embedding_table'). Сложите вложения токенов и позиций.",
+    "7. Реализуйте класс 'Head' (nn.Module) для одиночной головы внимания. Включите линейные слои для Key, Query, Value (nn.Linear). Вычислите веса внимания, используя 'q @ k.transpose(-2, -1)' и масштабирование на 'self.head_size**-0.5'. Примените причинное маскирование с 'torch.tril' и 'masked_fill'. Примените softmax и агрегируйте значения ('wei @ v').",
+    "8. Реализуйте класс 'MultiHeadAttention' (nn.Module). Он должен содержать 'nn.ModuleList' из нескольких 'Head's. Объедините выходы всех голов с помощью 'torch.cat' и примените финальную линейную проекцию ('nn.Linear') и 'nn.Dropout'.",
+    "9. Реализуйте класс 'FeedFoward' (nn.Module). Он должен представлять собой простую двухслойную MLP с нелинейностью ReLU и 'nn.Dropout'.",
+    "10. Реализуйте класс 'Block' (nn.Module) — основной строительный блок Трансформера. Он должен включать 'MultiHeadAttention' и 'FeedFoward'. Интегрируйте остаточные соединения (x = x + ...) и нормализацию слоев (nn.LayerNorm) в соответствии с формулировкой Pre-norm (применяя LN перед SA и FFWD).",
+    "11. Реализуйте класс 'GPTLanguageModel' (nn.Module). Он должен содержать 'token_embedding_table', 'position_embedding_table', 'nn.Sequential' из нескольких 'Block'ов, финальный 'nn.LayerNorm' и 'lm_head' (nn.Linear). Метод 'forward' должен обрабатывать вход 'idx' через все компоненты и возвращать логиты и потерю. Метод 'generate' должен предсказывать 'max_new_tokens', обрезая контекст до 'block_size' для позиционных вложений.",
+    "12. Напишите цикл обучения. Инициализируйте 'GPTLanguageModel', 'AdamW' оптимизатор. Реализуйте функцию 'estimate_loss' для усредненной оценки потерь на обучающем и валидационном наборах. Используйте 'model.to(device)' для GPU, 'optimizer.zero_grad()', 'loss.backward()', 'optimizer.step()'. Включите 'model.eval()', 'model.train()' и 'torch.no_grad()' в соответствующих местах.",
+    "13. После обучения сгенерируйте текст с помощью 'model.generate' и выведите его, используя функцию 'decode'."
+  ],
+  "code_snippets": [
+    {
+      "title": "Функции кодирования/декодирования и получение батча",
+      "language": "python",
+      "code": "import torch\nimport torch.nn as nn\nfrom torch.nn import functional as F\n\n# Загрузка данных (предполагается, что input.txt уже загружен)\nwith open('input.txt', 'r', encoding='utf-8') as f:\n    text = f.read()\nchars = sorted(list(set(text)))\nvocab_size = len(chars)\nstoi = {ch: i for i, ch in enumerate(chars)}\nitos = {i: ch for i, ch in enumerate(chars)}\nencode = lambda s: [stoi[c] for c in s]\ndecode = lambda l: ''.join([itos[i] for i in l])\n\n# Гиперпараметры (пример)\nbatch_size = 64\nblock_size = 256\nn_embed = 384\nn_head = 6\nn_layer = 6\ndropout = 0.2\nlearning_rate = 3e-4\nmax_iters = 5000\neval_interval = 500\neval_iters = 200\ndevice = 'cuda' if torch.cuda.is_available() else 'cpu'\n\n# Загрузка и разделение данных\ndata = torch.tensor(encode(text), dtype=torch.long)\nn = int(0.9 * len(data))\ntrain_data = data[:n]\nval_data = data[n:]\n\ndef get_batch(split):\n    data = train_data if split == 'train' else val_data\n    ix = torch.randint(len(data) - block_size, (batch_size,))\n    x = torch.stack([data[i:i+block_size] for i in ix])\n    y = torch.stack([data[i+1:i+block_size+1] for i in ix])\n    x, y = x.to(device), y.to(device)\n    return x, y"
+    },
+    {
+      "title": "Класс Head (одиночная голова внимания)",
+      "language": "python",
+      "code": "class Head(nn.Module):\n    def __init__(self, head_size):\n        super().__init__()\n        self.key = nn.Linear(n_embed, head_size, bias=False)\n        self.query = nn.Linear(n_embed, head_size, bias=False)\n        self.value = nn.Linear(n_embed, head_size, bias=False)\n        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))\n        self.dropout = nn.Dropout(dropout)\n\n    def forward(self, x):\n        B, T, C = x.shape\n        k = self.key(x)   # (B, T, head_size)\n        q = self.query(x) # (B, T, head_size)\n        v = self.value(x) # (B, T, head_size)\n\n        # Вычисление весов внимания (аффинностей)\n        wei = q @ k.transpose(-2, -1) * (head_size**-0.5) # (B, T, T)\n        wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf')) # Маскирование\n        wei = F.softmax(wei, dim=-1) # (B, T, T)\n        wei = self.dropout(wei)\n\n        # Взвешенная агрегация значений\n        out = wei @ v # (B, T, head_size)\n        return out"
+    },
+    {
+      "title": "Классы MultiHeadAttention и FeedFoward",
+      "language": "python",
+      "code": "class MultiHeadAttention(nn.Module):\n    def __init__(self, num_heads, head_size):\n        super().__init__()\n        self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])\n        self.proj = nn.Linear(n_embed, n_embed) # Проекция после конкатенации\n        self.dropout = nn.Dropout(dropout)\n\n    def forward(self, x):\n        out = torch.cat([h(x) for h in self.heads], dim=-1)\n        out = self.dropout(self.proj(out))\n        return out\n\nclass FeedFoward(nn.Module):\n    def __init__(self, n_embed):\n        super().__init__()\n        self.net = nn.Sequential(\n            nn.Linear(n_embed, 4 * n_embed),\n            nn.ReLU(),\n            nn.Linear(4 * n_embed, n_embed),\n            nn.Dropout(dropout),\n        )\n\n    def forward(self, x):\n        return self.net(x)"
+    },
+    {
+      "title": "Класс Block (блок Трансформера)",
+      "language": "python",
+      "code": "class Block(nn.Module):\n    def __init__(self, n_embed, n_head):\n        super().__init__()\n        head_size = n_embed // n_head\n        self.sa = MultiHeadAttention(n_head, head_size)\n        self.ffwd = FeedFoward(n_embed)\n        self.ln1 = nn.LayerNorm(n_embed) # Layer Norm перед вниманием\n        self.ln2 = nn.LayerNorm(n_embed) # Layer Norm перед FeedFoward\n\n    def forward(self, x):\n        # Pre-norm formulation\n        x = x + self.sa(self.ln1(x)) # Остаточное соединение + MultiHeadAttention\n        x = x + self.ffwd(self.ln2(x)) # Остаточное соединение + FeedFoward\n        return x"
+    },
+    {
+      "title": "Класс GPTLanguageModel (полная модель)",
+      "language": "python",
+      "code": "class GPTLanguageModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.token_embedding_table = nn.Embedding(vocab_size, n_embed)\n        self.position_embedding_table = nn.Embedding(block_size, n_embed)\n        self.blocks = nn.Sequential(*[Block(n_embed, n_head) for _ in range(n_layer)])\n        self.ln_f = nn.LayerNorm(n_embed) # Финальный LayerNorm\n        self.lm_head = nn.Linear(n_embed, vocab_size)\n\n    def forward(self, idx, targets=None):\n        B, T = idx.shape\n\n        tok_emb = self.token_embedding_table(idx) # (B, T, n_embed)\n        pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (T, n_embed)\n        x = tok_emb + pos_emb # (B, T, n_embed)\n\n        x = self.blocks(x) # Применяем все блоки\n        x = self.ln_f(x) # Финальная нормализация\n        logits = self.lm_head(x) # (B, T, vocab_size)\n\n        if targets is None:\n            loss = None\n        else:\n            B, T, C = logits.shape\n            logits = logits.view(B*T, C)\n            targets = targets.view(B*T)\n            loss = F.cross_entropy(logits, targets)\n\n        return logits, loss\n\n    def generate(self, idx, max_new_tokens):\n        # idx - (B, T) массив индексов в текущем контексте\n        for _ in range(max_new_tokens):\n            # Обрезаем idx до block_size (для позиционных вложений)\n            idx_cond = idx[:, -block_size:]\n            # Получаем предсказания\n            logits, loss = self(idx_cond)\n            # Фокусируемся только на последнем временном шаге\n            logits = logits[:, -1, :] # становится (B, C)\n            # Применяем softmax для получения вероятностей\n            probs = F.softmax(logits, dim=-1) # (B, C)\n            # Выбираем (сэмплируем) из распределения\n            idx_next = torch.multinomial(probs, num_samples=1) # (B, 1)\n            # Добавляем выбранный индекс к текущей последовательности\n            idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)\n        return idx"
+    },
+    {
+      "title": "Функция оценки потерь и цикл обучения",
+      "language": "python",
+      "code": "@torch.no_grad()\ndef estimate_loss():\n    out = {}\n    model.eval()\n    for split in ['train', 'val']:\n        losses = torch.zeros(eval_iters)\n        for k in range(eval_iters):\n            X, Y = get_batch(split)\n            logits, loss = model(X, Y)\n            losses[k] = loss.item()\n        out[split] = losses.mean()\n    model.train()\n    return out\n\nmodel = GPTLanguageModel().to(device)\noptimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)\n\nfor iter in range(max_iters):\n    if iter % eval_interval == 0 or iter == max_iters - 1:\n        losses = estimate_loss()\n        print(f\"Шаг {iter}: Потери на обучении {losses['train']:.4f}, Потери на валидации {losses['val']:.4f}\")\n\n    xb, yb = get_batch('train')\n    logits, loss = model(xb, yb)\n    optimizer.zero_grad(set_to_none=True)\n    loss.backward()\n    optimizer.step()\n\n# Генерация текста после обучения\ncontext = torch.zeros((1, 1), dtype=torch.long, device=device) # Начинаем с токена 0 (newline)\nprint(decode(model.generate(context, max_new_tokens=500)[0].tolist()))"
+    }
+  ],
+  "evaluation_criteria": [
+    "Корректность реализации всех классов модели (Head, MultiHeadAttention, FeedFoward, Block, GPTLanguageModel) согласно архитектуре Трансформера (Decoder-Only).",
+    "Снижение потерь на обучающей и валидационной выборках во время обучения (validation loss должен быть значительно ниже 4.17 (случайное предсказание) и лучше, чем 2.5 (биграммная модель)).",
+    "Генерация текста после обучения должна демонстрировать стилистические и лексические паттерны, характерные для входного датасета (Tiny Shakespeare), даже если текст бессмысленный.",
+    "Правильное использование GPU (CUDA) для вычислений, если доступно.",
+    "Гиперпараметры должны быть настроены для эффективного обучения модели (например, 'n_embed', 'n_head', 'n_layer' не должны быть слишком малыми)."
+  ]
+}

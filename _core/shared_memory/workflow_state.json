@@ -1,0 +1,47 @@
+{
+  "system_state": "ПАУЗА (ЛИМИТ ТОКЕНОВ)",
+  "project_name": "Pixel Office Orchestrator",
+  "version": "1.0.0",
+  "active_agents": [
+    "Lead Developer",
+    "UI/UX Designer",
+    "QA Engineer",
+    "Review Manager",
+    "Growth/Marketing Lead"
+  ],
+  "desks_mapping": {
+    "Desk_1": "Lead Developer",
+    "Desk_2": "UI/UX Designer",
+    "Desk_3": "QA Engineer",
+    "Desk_4": "Review Manager",
+    "Desk_5": "Growth/Marketing Lead"
+  },
+  "current_tasks": [
+    {
+      "agent": "Lead Developer",
+      "task": "[Тест связи] Разработка скрипта telegram_test.py для отправки тестового сообщения в канал Telegram через Bot API.",
+      "status": "ACTIVE"
+    },
+    {
+      "agent": "UI/UX Designer",
+      "task": "Разработка современной светлой темы, стилей карточек и отступов.",
+      "status": "ACTIVE"
+    },
+    {
+      "agent": "Review Manager",
+      "task": "Пул-реквест проверен. Релизный цикл ОДОБРЕН, подпись зафиксирована.",
+      "status": "IDLE"
+    },
+    {
+      "agent": "Growth/Marketing Lead",
+      "task": "Подготовка первой публикации в Telegram для запуска платформы.",
+      "status": "IDLE"
+    },
+    {
+      "agent": "QA Engineer",
+      "task": "[Тест связи] Написание интеграционных тестов qa_telegram_test.py для верификации отправки сообщений.",
+      "status": "ACTIVE"
+    }
+  ],
+  "last_synchronized": "2026-05-23T19:03:00+03:00"
+}
