@@ -210,12 +210,39 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     queries_videos = [
-        "make money with AI course",
-        "AI monetization masterclass",
-        "AI SaaS startup tutorial",
-        "AI automation agency business model"
+        "AI side hustle 2026",
+        "How to make money with AI",
+        "AI passive income tools",
+        "Faceless YouTube channel AI",
+        "AI automation agency (AAA)",
+        "Print on demand AI tutorial",
+        "AI SaaS side hustle",
+        "Making $1000/week with AI",
+        "Automated AI blog setup",
+        "AI content engine workflow",
+        "Autopilot content creation",
+        "Blog to video AI automation",
+        "AI video generation workflow",
+        "AI voiceover tutorial ElevenLabs",
+        "AI automation workflows",
+        "n8n AI agent tutorial",
+        "No-code AI pipelines",
+        "AI agents for workflow automation",
+        "Gumloop tutorial / Make.com AI automation",
+        "Automated data extraction AI",
+        "Custom GPTs for business",
+        "Connecting AI to database (ClickHouse / SQLite)",
+        "Top AI tools 2026",
+        "Next-gen AI video generators",
+        "OpusClip alternatives / Descript AI tutorial",
+        "HeyGen / Synthesia avatar tutorial",
+        "CapCut Pro AI features",
+        "Best AI extensions for creators"
     ]
     queries_shorts = [
+        "Bulk create Shorts AI",
+        "Faceless channel automation",
+        "Automated faceless TikTok / Reels",
         "make money with AI shorts",
         "AI monetization hacks shorts",
         "AI side hustle shorts"
