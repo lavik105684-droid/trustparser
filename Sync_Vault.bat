@@ -1,18 +1,19 @@
 @echo off
-title 🔮 СИНХРОНИЗАТОР ФАБРИКИ ИИ-КОНТЕНТА (2026)
-chcp 65001 > nul
+pushd "%~dp0"
+title AI CONTENT FACTORY SYNCHRONIZER (2026)
 
 echo ======================================================================
-echo           🔮 СИНХРОНИЗАТОР ФАБРИКИ ИИ-КОНТЕНТА (2026)
+echo           AI CONTENT FACTORY SYNCHRONIZER (2026)
 echo ======================================================================
 echo.
-echo [INFO] Запуск сквозного конвейера обновления вашей базы знаний...
+echo [INFO] Starting AI content factory vault synchronization pipeline...
 echo.
 
 C:\Python314\python.exe sync_git_notebooklm.py
 
 echo.
 echo ======================================================================
-echo [COMPLETE] Выполнение завершено! Нажмите любую клавишу для выхода...
+echo [COMPLETE] Synchronization complete! Press any key to exit...
 echo ======================================================================
+popd
 pause > nul
