@@ -238,7 +238,18 @@ if __name__ == "__main__":
         "OpusClip alternatives / Descript AI tutorial",
         "HeyGen / Synthesia avatar tutorial",
         "CapCut Pro AI features",
-        "Best AI extensions for creators"
+        "Best AI extensions for creators",
+        "n8n AI agent B2B workflow",
+        "Make.com AI automation tutorial 2026",
+        "vibe coding Micro SaaS build",
+        "Lovable dev tutorial AI",
+        "CPA marketing AI automation",
+        "AI traffic generation hacks",
+        "B2B lead generation AI agents",
+        "Cursor AI coding tutorial",
+        "Micro SaaS ideas 2026",
+        "AI agent orchestration Make.com",
+        "Automated CPA marketing 2026"
     ]
     queries_shorts = [
         "Bulk create Shorts AI",
@@ -246,7 +257,15 @@ if __name__ == "__main__":
         "Automated faceless TikTok / Reels",
         "make money with AI shorts",
         "AI monetization hacks shorts",
-        "AI side hustle shorts"
+        "AI side hustle shorts",
+        "n8n B2B AI shorts",
+        "Make.com automation hacks",
+        "vibe coding SaaS shorts",
+        "Lovable app dev shorts",
+        "CPA AI automation shorts",
+        "generate AI traffic shorts",
+        "Micro SaaS AI shorts",
+        "Cursor coding hacks shorts"
     ]
     # Crawl based on command line arguments
     bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=args.max_videos, max_shorts=args.max_shorts)
