@@ -10,15 +10,19 @@ import subprocess
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
-# Add current directory to path to import youtube_extractor and discovery
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from youtube_extractor import get_youtube_transcript, extract_video_id
-from discovery import clean_html
+CACHE_DIR = os.path.join("scratch", "botany_cache")
+REGISTRY_FILE = os.path.join("scratch", "botany_registry.json")
+CALIBRATION_FILE = os.path.join("scratch", "botany_calibration.json")
 
-CACHE_DIR = os.path.join("scratch", "yt_cache")
-REGISTRY_FILE = os.path.join("scratch", "yt_registry.json")
+def clean_html(text):
+    """Clean HTML entities and spaces."""
+    text = re.sub(r'&amp;', '&', text)
+    text = re.sub(r'&quot;', '"', text)
+    text = re.sub(r'&#39;', "'", text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
 
-def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
+def search_youtube_raw(query, limit=30, long_only=False, min_minutes=20):
     """
     Zero-dependency search on YouTube returning video details.
     Uses split-based HTML parsing and universal simpleText duration check.
@@ -38,11 +42,9 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="ignore")
         html = res.stdout
-        
-        # Split HTML by videoRenderer block start to avoid lazy-matching JSON truncation
         blocks = html.split('"videoRenderer":{')
         
-        for block in blocks[1:]:  # Skip the first block before any renderer
+        for block in blocks[1:]:
             vid_match = re.search(r'"videoId":"([^"]{11})"', block)
             title_match = re.search(r'"title":\{"runs":\[\{"text":"([^"]+)"\}', block)
             length_match = re.search(r'"lengthText":\{"accessibility":\{"accessibilityData":\{"label":"[^"]+"\}\},"simpleText":"([^"]+)"\}', block)
@@ -52,10 +54,8 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
                 title = title_match.group(1) if title_match else "YouTube Video"
                 title = clean_html(title)
                 
-                # Default is_short detection
                 is_short = "short" in title.lower()
                 
-                # Check duration in a language-independent way using simpleText (format: MM:SS or H:MM:SS)
                 if length_match:
                     duration_str = length_match.group(1)
                     parts = duration_str.split(":")
@@ -72,9 +72,8 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
                             except ValueError:
                                 pass
                         if not is_long_enough:
-                            continue  # Skip this video as it is under our minimum minutes threshold!
+                            continue
                     else:
-                        # Short detection: duration under 1:30 or explicitly Short
                         if len(parts) == 2:
                             try:
                                 minutes = int(parts[0])
@@ -85,7 +84,7 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
                                 pass
                 else:
                     if long_only:
-                        continue  # Skip if length is unknown and we strictly want long videos
+                        continue
                 
                 results.append({
                     "id": vid,
@@ -96,7 +95,6 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
                 if len(results) >= limit:
                     break
                     
-        # Fallback using regex if no split blocks matched (cannot verify duration)
         if not results and not long_only:
             video_ids = re.findall(r'"videoId":"([^"]+)"', html)
             unique_ids = []
@@ -116,8 +114,6 @@ def search_youtube_raw(query, limit=30, long_only=False, min_minutes=40):
         
     print(f"[CRAWLER] Найдено {len(results)} видеороликов по запросу '{query}'")
     return results
-
-CALIBRATION_FILE = os.path.join("scratch", "crawler_calibration.json")
 
 def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=0):
     start_time = time.time()
@@ -169,7 +165,7 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
             for r in results:
                 if r["id"] not in [v["id"] for v in discovered_videos]:
                     discovered_videos.append(r)
-            if len(discovered_videos) >= max_videos * 2:  # Get a buffer of candidates
+            if len(discovered_videos) >= max_videos * 2:
                 break
         if len(discovered_videos) >= max_videos:
             print(f"[CRAWLER] Найдено достаточно длинных видео ({len(discovered_videos)}) с порогом >= {min_mins} мин.")
@@ -180,7 +176,7 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
     # 2. Search Shorts
     for idx, q in enumerate(queries_shorts):
         if idx > 0:
-            time.sleep(3.0)  # Cooldown between searches
+            time.sleep(3.0)
         results = search_youtube_raw(q, limit=20, long_only=False)
         for r in results:
             if r["is_short"] or "shorts" in q.lower():
@@ -192,7 +188,7 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
                     
     print(f"\n[CRAWLER-STATUS] Агрегировано кандидатов: {len(discovered_videos)} длинных видео, {len(discovered_shorts)} shorts.")
     
-    # Limit to requested bounds
+    # Limit to bounds
     target_videos = discovered_videos[:max_videos]
     target_shorts = discovered_shorts[:max_shorts]
     
@@ -201,16 +197,11 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
     
     print(f"[CRAWLER-STATUS] Начинаем сбор {total_targets} выбранных роликов...")
     
-    # Merge into existing registry instead of clearing it
     scraped_count = 0
-    
-    # NOTE: Since local scraping of transcripts gets blocked by YouTube IP blocks,
-    # we now only collect their metadata and save URLs to registry.
-    # NotebookLM will pull the transcripts directly from Google cloud during import!
     for idx, t in enumerate(all_targets):
         vid_id = t["id"]
         
-        # Save a registry entry so orchestrator can upload it directly via nlm
+        # Save a registry entry
         if vid_id not in registry:
             registry[vid_id] = {
                 "title": t["title"],
@@ -235,13 +226,11 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
     
     adjusted = False
     if duration < 28:
-        # Increase limits by 20% to harvest more, up to safety caps
         calibrated_videos = min(200, int(calibrated_videos * 1.20) + 1)
         calibrated_shorts = min(1000, int(calibrated_shorts * 1.20) + 2)
         adjusted = True
         print(f"[CALIBRATION] Выполнение слишком быстрое. Лимиты увеличены: max_videos={calibrated_videos}, max_shorts={calibrated_shorts}")
     elif duration > 32:
-        # Decrease limits by 15% to keep duration stable
         calibrated_videos = max(5, int(calibrated_videos * 0.85))
         calibrated_shorts = max(10, int(calibrated_shorts * 0.85))
         adjusted = True
@@ -264,7 +253,7 @@ def bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=0, max_shorts=
     print(f"Всего подготовлено для NotebookLM: {len(registry)} (Добавлено новых в этом запуске: {scraped_count})")
     print(f"==================================================")
     return registry
- 
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -273,61 +262,44 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     queries_videos = [
-        "AI side hustle 2026",
-        "How to make money with AI",
-        "AI passive income tools",
-        "Faceless YouTube channel AI",
-        "AI automation agency (AAA)",
-        "Print on demand AI tutorial",
-        "AI SaaS side hustle",
-        "Making $1000/week with AI",
-        "Automated AI blog setup",
-        "AI content engine workflow",
-        "Autopilot content creation",
-        "Blog to video AI automation",
-        "AI video generation workflow",
-        "AI voiceover tutorial ElevenLabs",
-        "AI automation workflows",
-        "n8n AI agent tutorial",
-        "No-code AI pipelines",
-        "AI agents for workflow automation",
-        "Gumloop tutorial / Make.com AI automation",
-        "Automated data extraction AI",
-        "Custom GPTs for business",
-        "Connecting AI to database (ClickHouse / SQLite)",
-        "Top AI tools 2026",
-        "Next-gen AI video generators",
-        "OpusClip alternatives / Descript AI tutorial",
-        "HeyGen / Synthesia avatar tutorial",
-        "CapCut Pro AI features",
-        "Best AI extensions for creators",
-        "n8n AI agent B2B workflow",
-        "Make.com AI automation tutorial 2026",
-        "vibe coding Micro SaaS build",
-        "Lovable dev tutorial AI",
-        "CPA marketing AI automation",
-        "AI traffic generation hacks",
-        "B2B lead generation AI agents",
-        "Cursor AI coding tutorial",
-        "Micro SaaS ideas 2026",
-        "AI agent orchestration Make.com",
-        "Automated CPA marketing 2026"
+        "How to grow Alocasia at home guide",
+        "Alocasia Jacklyn care indoor",
+        "Alocasia Frydek variegata care",
+        "Indoor plant grow light setup PPFD lux",
+        "Foliage plant fertilizers NPK ratio",
+        "Foliage soil mix DIY perlite vermiculite",
+        "Hydroponics indoor setup home",
+        "Growing lemon trees indoors guide",
+        "How to grow figs indoors home",
+        "Active grow lights indoor gardening",
+        "NPK chemistry indoor plant care",
+        "HB-101 plant growth stimulator review",
+        "Superthrive fertilizer indoor plants guide",
+        "Aktara insecticide indoor plants tripse",
+        "How to treat spider mites house plants neem oil",
+        "Soil moisture sensor smart home zigbee plant",
+        "Alocasia watering hacks guide",
+        "Variegated monster care indoor",
+        "Growing indoor strawberries setup LED",
+        "Root rot treatment indoor plants",
+        "Indoor moss pole monstera setup",
+        "Lechuza pon soil mix house plants",
+        "Indoor citrus fertilizer chemistry",
+        "Best soil mix for rare alocasias",
+        "Houseplant smart watering systems DIY",
+        "Cytokinin paste orchid alocasia propagation",
+        "Grow lamps spectrum blue red white PPFD"
     ]
     queries_shorts = [
-        "Bulk create Shorts AI",
-        "Faceless channel automation",
-        "Automated faceless TikTok / Reels",
-        "make money with AI shorts",
-        "AI monetization hacks shorts",
-        "AI side hustle shorts",
-        "n8n B2B AI shorts",
-        "Make.com automation hacks",
-        "vibe coding SaaS shorts",
-        "Lovable app dev shorts",
-        "CPA AI automation shorts",
-        "generate AI traffic shorts",
-        "Micro SaaS AI shorts",
-        "Cursor coding hacks shorts"
+        "Alocasia propagation hack shorts",
+        "Indoor grow lights comparison shorts",
+        "NPK fertilizer houseplant shorts",
+        "DIY soil mix house plants shorts",
+        "Spider mite treatment neem oil shorts",
+        "Root rot rescue alocasia shorts",
+        "HB-101 plant hack shorts",
+        "Smart plant sensor home assistant shorts",
+        "Monstera repotting moss pole shorts",
+        "Grow strawberries at home LED shorts"
     ]
-    # Crawl based on command line arguments
     bulk_crawl_youtube(queries_videos, queries_shorts, max_videos=args.max_videos, max_shorts=args.max_shorts)

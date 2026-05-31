@@ -1,25 +1,25 @@
-name: Cloud YouTube Crawler (Jules Engine)
+name: Cloud Botany YouTube Crawler
 
 on:
   schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
+    # Run every 12 hours (twice a day)
+    - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
       max_videos:
         description: 'Количество длинных видео'
         required: true
-        default: '100'
+        default: '50'
       max_shorts:
         description: 'Количество Shorts'
         required: true
-        default: '100'
+        default: '50'
 
 jobs:
   crawl:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to push committed changes back
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -30,17 +30,17 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Run Zero-Dependency YouTube Crawler
+      - name: Run Self-Calibrating Botany Crawler
         run: |
           MAX_VIDEOS="${{ github.event.inputs.max_videos || '0' }}"
           MAX_SHORTS="${{ github.event.inputs.max_shorts || '0' }}"
-          echo "Запуск сбора в облаке: $MAX_VIDEOS видео и $MAX_SHORTS shorts (0 = авто-калибровка)"
-          python src/knowledge_extractor/youtube_bulk_crawler.py --max-videos $MAX_VIDEOS --max-shorts $MAX_SHORTS
+          echo "Запуск ботанического сбора: $MAX_VIDEOS видео и $MAX_SHORTS shorts (0 = авто-калибровка)"
+          python src/knowledge_extractor/botany_bulk_crawler.py --max-videos $MAX_VIDEOS --max-shorts $MAX_SHORTS
 
       - name: Commit and Push registry changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add scratch/yt_registry.json scratch/crawler_calibration.json
-          git commit -m "chore: update YouTube registry and calibration [skip ci]" || echo "No changes to commit"
+          git add scratch/botany_registry.json scratch/botany_calibration.json
+          git commit -m "chore: update Botany registry and calibration [skip ci]" || echo "No changes to commit"
           git push
