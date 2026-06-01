@@ -50,23 +50,29 @@ def main():
         sys.exit(1)
         
     # Шаг 1. Делаем git pull
-    print("\n[1/4] Обновление реестра ботанических ссылок из Git...")
+    print("\n[1/5] Обновление реестра ботанических ссылок из Git...")
     if not run_cmd(["git", "pull"]):
         print("[WARNING] Не удалось выполнить git pull. Продолжаем с локальным реестром...")
 
     # Шаг 2. Запуск оркестратора NotebookLM для Botany
-    print("\n[2/4] Загрузка источников в Botany Vault и RAG-синтез...")
+    print("\n[2/5] Загрузка источников в Botany Vault и RAG-синтез...")
     orchestrator_script = os.path.join("src", "knowledge_extractor", "botany_orchestrator.py")
     if not run_cmd([sys.executable, orchestrator_script]):
         print("[ERROR] Сбой на этапе Botany NotebookLM-анализа.")
         sys.exit(1)
 
     # Шаг 3. Запуск генератора Obsidian для Botany
-    print("\n[3/4] Сборка карточек приборов, удобрений и культур в Obsidian...")
+    print("\n[3/5] Сборка карточек приборов, удобрений и культур в Obsidian...")
     generator_script = os.path.join("src", "knowledge_extractor", "botany_skills_generator.py")
     if not run_cmd([sys.executable, generator_script]):
         print("[ERROR] Сбой на этапе генерации Botany Obsidian-заметок.")
         sys.exit(1)
+
+    # Шаг 4. Подготовка и скачивание беззвучного видеоряда Shorts
+    print("\n[4/5] Скачивание и подготовка беззвучного видеоряда Shorts...")
+    prep_script = os.path.join("src", "knowledge_extractor", "botany_video_prep.py")
+    if not run_cmd([sys.executable, prep_script]):
+        print("[WARNING] Не удалось полностью подготовить видеоряд Shorts.")
         
     print("\n🎉 [SUCCESS] Бот-синхронизация успешно завершена! Ботанический хаб обновлен!")
 
