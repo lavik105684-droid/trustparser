@@ -14,33 +14,90 @@ PREP_DIR = os.path.join("scratch", "botany_prep_videos")
 def ensure_dirs():
     os.makedirs(PREP_DIR, exist_ok=True)
 
+COOKIES_FILE = os.path.join("scratch", "youtube_cookies.txt")
+
 def download_silent_video(url, output_path):
     print(f"[PREP] Запуск скачивания беззвучного видео для: {url}...")
-    # Pass -f "bestvideo[ext=mp4]/bestvideo" to download ONLY video stream (silent)
-    cmd = [
-        YTDLP_PATH,
-        "-f", "bestvideo[ext=mp4]/bestvideo",
-        "-o", output_path,
-        url
-    ]
-    try:
-        res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="ignore")
-        if res.returncode == 0:
-            print(f"[PREP-SUCCESS] Видео сохранено: {output_path}")
-            return True
-        else:
-            # Fallback if bestvideo format is not available in mp4, download general best video
-            print(f"[PREP-WARNING] Не удалось скачать mp4-bestvideo, пробуем универсальный bestvideo...")
-            cmd_fallback = [YTDLP_PATH, "-f", "bestvideo", "-o", output_path, url]
-            res_fb = subprocess.run(cmd_fallback, capture_output=True, text=True, encoding="utf-8", errors="ignore")
-            if res_fb.returncode == 0:
-                print(f"[PREP-SUCCESS] Видео (универсальный формат) сохранено: {output_path}")
-                return True
-            print(f"[PREP-ERROR] Ошибка скачивания (код {res_fb.returncode}): {res_fb.stderr}")
-            return False
-    except Exception as e:
-        print(f"[PREP-ERROR] Исключение при запуске yt-dlp: {e}")
-        return False
+    
+    # 1. Determine fallback chain of cookie/download arguments
+    methods = []
+    
+    # Method A: Self-healing Netscape cookies file (100% robust, never locks)
+    if os.path.exists(COOKIES_FILE):
+        methods.append({
+            "name": "Netscape Cookies File (youtube_cookies.txt)",
+            "args": ["--cookies", COOKIES_FILE]
+        })
+        
+    # Method B: Zero-cookies direct download (works for unflagged IPs)
+    methods.append({
+        "name": "Direct Download (No Cookies)",
+        "args": []
+    })
+    
+    # Method C: Chrome browser cookies (may fail if Chrome is open/locked)
+    methods.append({
+        "name": "Google Chrome Browser Cookies",
+        "args": ["--cookies-from-browser", "chrome"]
+    })
+    
+    # Method D: Edge browser cookies
+    methods.append({
+        "name": "Microsoft Edge Browser Cookies",
+        "args": ["--cookies-from-browser", "edge"]
+    })
+    
+    success = False
+    for method in methods:
+        print(f"[PREP] Пробуем метод скачивания: {method['name']}...")
+        cmd = [
+            YTDLP_PATH,
+            "-f", "bestvideo[ext=mp4]/bestvideo",
+        ] + method["args"] + [
+            "-o", output_path,
+            url
+        ]
+        
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="ignore")
+            if res.returncode == 0:
+                print(f"[PREP-SUCCESS] Видео успешно скачано методом: {method['name']}")
+                success = True
+                break
+            else:
+                # Try fallback format format if bestvideo[ext=mp4] failed but download didn't block
+                if "Sign in to confirm" not in res.stderr and "Could not copy Chrome cookie database" not in res.stderr:
+                    print(f"[PREP-WARNING] Формат mp4-bestvideo недоступен, пробуем универсальный bestvideo...")
+                    cmd_fallback = [
+                        YTDLP_PATH,
+                        "-f", "bestvideo",
+                    ] + method["args"] + [
+                        "-o", output_path,
+                        url
+                    ]
+                    res_fb = subprocess.run(cmd_fallback, capture_output=True, text=True, encoding="utf-8", errors="ignore")
+                    if res_fb.returncode == 0:
+                        print(f"[PREP-SUCCESS] Видео успешно скачано в универсальном формате!")
+                        success = True
+                        break
+                print(f"[PREP-WARNING] Метод '{method['name']}' не сработал. Ошибка: {res.stderr.strip()[:180]}...")
+        except Exception as e:
+            print(f"[PREP-WARNING] Исключение при методе '{method['name']}': {e}")
+            
+    if success:
+        return True
+        
+    # All methods failed - print a highly actionable and beautiful troubleshooting instruction in Russian
+    print("\n" + "="*70)
+    print("❌ [PREP-CRITICAL] ВСЕ МЕТОДЫ СКАЧИВАНИЯ БЛОКИРОВАНЫ YOUTUBE (ЗАЩИТА ОТ БОТОВ)")
+    print("Для полной автоматизации и обхода блокировок выполните простые шаги:")
+    print("1. Установите в Chrome бесплатное расширение 'Get cookies.txt LOCALLY'")
+    print("2. Откройте YouTube.com в браузере, нажмите на иконку расширения и нажмите 'Export'")
+    print("3. Сохраните скачанный файл под именем 'youtube_cookies.txt' в папку проекта:")
+    print(f"   -> C:\\Users\\lavik\\Documents\\antigravity\\modest-carson\\{COOKIES_FILE}")
+    print("После этого конвейер будет скачивать ролики на 100% стабильно и без прерываний!")
+    print("="*70 + "\n")
+    return False
 
 def main():
     ensure_dirs()
