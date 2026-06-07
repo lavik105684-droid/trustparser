@@ -35,6 +35,15 @@
       "created_at": "2026-06-08",
       "published_at": null,
       "platforms": {"zen": false, "tg": false}
+    },
+    {
+      "source_files": ["инсектициды_и_биозащита_(pest_control).md", "инсектицидное_мыло_(insecticidal_soap).md", "корица_и_алоэ_вера_(cinnamon_&_aloe_vera_gel).md"],
+      "target_draft": "drafts/article_05_pest_control.md",
+      "title": "Война в джунглях: как уничтожить вредителей",
+      "status": "drafted",
+      "created_at": "2026-06-08",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
     }
   ]
 }
