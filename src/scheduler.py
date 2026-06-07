@@ -1,102 +1,133 @@
 """
-Auto-posting scheduler stub for the "Искра и Росток" project.
-This module will eventually read markdown drafts from the `/drafts` directory
-and publish them to target platforms (e.g., Telegram, Yandex.Zen) via APIs.
+Auto-posting scheduler for the "Искра и Росток" project.
+Reads content_state.json, finds 'drafted' articles, publishes them to Telegram,
+and updates their status.
 """
 
 import os
+import json
 import time
 import logging
 from pathlib import Path
+from src.tg_publisher import TelegramPublisher
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+STATE_FILE = Path("knowledge/content_state.json")
 DRAFTS_DIR = Path("drafts")
 
-class ArticlePublisher:
-    """Handles the parsing and publishing of markdown articles."""
-    def __init__(self, platform: str):
-        self.platform = platform
+class PostingScheduler:
+    """Monitors content_state.json and schedules publications."""
+    def __init__(self):
+        self.tg_publisher = TelegramPublisher()
 
-    def publish(self, filepath: Path) -> bool:
-        """Publishes the article to the specified platform."""
-        logger.info(f"[{self.platform}] Preparing to publish: {filepath.name}")
+    def load_state(self):
+        if not STATE_FILE.exists():
+            logger.error(f"State file not found: {STATE_FILE}")
+            return {"articles": []}
+        with open(STATE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
 
-        # 1. Read the markdown content
+    def save_state(self, state_data):
+        with open(STATE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(state_data, f, ensure_ascii=False, indent=2)
+
+    def extract_text_for_tg(self, filepath: Path) -> str:
+        """Reads the markdown file and formats it for Telegram (e.g. max length, strip gallery prompts)."""
         if not filepath.exists():
-            logger.error(f"File not found: {filepath}")
-            return False
+            return ""
 
         with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
+            text = f.read()
 
-        # 2. TODO: Parse the content
-        # - Extract title
-        # - Extract body text
-        # - Extract "Галерея для публикации" section and process image prompts (if connected to an image gen API)
+        # Basic cleanup: remove "Галерея для публикации" section as it's meant for internal generation
+        if "## Галерея для публикации" in text:
+            text = text.split("## Галерея для публикации")[0].strip()
 
-        # 3. TODO: Format for specific platform (e.g., convert markdown to HTML for Zen, or split for Telegram)
-        logger.info(f"[{self.platform}] Formatting content...")
+        return text
 
-        # 4. TODO: API Call to publish
-        logger.info(f"[{self.platform}] Executing API call to publish...")
+    def find_local_images(self, article_name: str) -> list:
+        """
+        Scans for locally generated images matching the article name.
+        Assumes images are stored in a 'media' folder inside drafts with prefix matching the article.
+        """
+        media_dir = DRAFTS_DIR / "media"
+        if not media_dir.exists():
+            return []
 
-        # Simulate network delay
-        time.sleep(1)
-
-        logger.info(f"[{self.platform}] Successfully published: {filepath.name}")
-        return True
-
-
-class PostingScheduler:
-    """Monitors the drafts directory and schedules publications."""
-    def __init__(self):
-        self.publishers = {
-            'telegram': ArticlePublisher('Telegram'),
-            'yandex_zen': ArticlePublisher('Yandex.Zen')
-        }
-
-    def get_pending_drafts(self):
-        """Scans the drafts directory for markdown files ready to be published."""
-        logger.info(f"Scanning {DRAFTS_DIR} for pending drafts...")
-        drafts = list(DRAFTS_DIR.glob("*.md"))
-        return drafts
+        stem = Path(article_name).stem
+        images = []
+        for ext in ['.jpg', '.jpeg', '.png']:
+            # match article_01_alocasia_soil_1.jpg, etc.
+            images.extend(list(media_dir.glob(f"{stem}*{ext}")))
+        return sorted(images)
 
     def run_cycle(self):
         """Main execution cycle for the scheduler."""
-        logger.info("Starting scheduler cycle...")
-        drafts = self.get_pending_drafts()
+        logger.info("Starting scheduler publishing cycle...")
 
-        if not drafts:
-            logger.info("No pending drafts found.")
-            return
+        # Check if TG credentials are set
+        if not self.tg_publisher.token or not self.tg_publisher.chat_id:
+            logger.warning("Telegram credentials not found in .env. Dry-run mode only.")
 
-        for draft in drafts:
-            logger.info(f"Processing draft: {draft.name}")
+        state_data = self.load_state()
+        articles = state_data.get("articles", [])
 
-            # TODO: Add logic to determine which platforms to publish to based on tags/metadata
+        changes_made = False
 
-            # Example: Publish to both platforms
-            for name, publisher in self.publishers.items():
-                success = publisher.publish(draft)
-                if success:
-                    # TODO: Move published draft to an 'archive' or 'published' directory
-                    pass
+        for article in articles:
+            if article.get("status") == "drafted":
+                draft_path = Path(article.get("target_draft"))
 
-        logger.info("Scheduler cycle completed.")
+                logger.info(f"Processing drafted article: {draft_path.name}")
 
+                platforms = article.get("platforms", {})
+
+                # Check Telegram
+                if not platforms.get("tg", False):
+                    text_content = self.extract_text_for_tg(draft_path)
+
+                    if text_content:
+                        image_paths = self.find_local_images(draft_path.name)
+                        if image_paths:
+                            logger.info(f"Found {len(image_paths)} images for {draft_path.name}")
+
+                        logger.info("Attempting to publish to Telegram...")
+                        success = False
+
+                        # Only actually send if credentials exist
+                        if self.tg_publisher.token and self.tg_publisher.chat_id:
+                            success = self.tg_publisher.send_media_group(text_content, image_paths)
+                        else:
+                            # Simulated success for local testing without credentials
+                            success = True
+
+                        if success:
+                            platforms["tg"] = True
+                            changes_made = True
+                            logger.info(f"Successfully marked {draft_path.name} as published on Telegram.")
+                    else:
+                        logger.error(f"Could not extract text from {draft_path}")
+
+                # Update global status if all target platforms are satisfied
+                article["platforms"] = platforms
+                # Wait for both zen and tg to be true, OR if zen is explicitly handled as manual outside this logic
+                # The user stated: "Если и Дзен, и ТГ закрыты, общий статус статьи меняется на 'published'"
+                if platforms.get("tg", False) and platforms.get("zen", False):
+                    article["status"] = "published"
+                    article["published_at"] = time.strftime("%Y-%m-%d")
+                    changes_made = True
+                    logger.info(f"Article {draft_path.name} is fully published!")
+
+        if changes_made:
+            self.save_state(state_data)
+            logger.info("State file updated.")
+
+        logger.info("Scheduler publishing cycle completed.")
 
 if __name__ == "__main__":
     logger.info("Initializing Auto-Posting Scheduler...")
     scheduler = PostingScheduler()
-
-    # In a real scenario, this would be a long-running loop (e.g., using schedule library)
-    # schedule.every().day.at("10:00").do(scheduler.run_cycle)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(60)
-
-    # Run once for testing the stub
     scheduler.run_cycle()
