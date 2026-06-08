@@ -1,0 +1,49 @@
+{
+  "articles": [
+    {
+      "source_files": ["plants_science_books.md"],
+      "target_draft": "drafts/article_01_alocasia_soil.md",
+      "title": "Почему ваши Алоказии гниют",
+      "status": "drafted",
+      "created_at": "2026-06-07",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
+    },
+    {
+      "source_files": ["plants_science_books.md"],
+      "target_draft": "drafts/article_02_dasha_mix.md",
+      "title": "ИИ против Даши: ломаем магазинные стереотипы",
+      "status": "drafted",
+      "created_at": "2026-06-07",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
+    },
+    {
+      "source_files": ["жидкое_удобрение_foliage_focus.md", "базовое_соотношение_npk_для_разных_фаз.md"],
+      "target_draft": "drafts/article_03_npk_logic.md",
+      "title": "Химия домашних джунглей",
+      "status": "drafted",
+      "created_at": "2026-06-07",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
+    },
+    {
+      "source_files": ["plants_science_books.md"],
+      "target_draft": "drafts/article_04_light_physics.md",
+      "title": "Выжить в подлеске: как рассчитать PPFD",
+      "status": "drafted",
+      "created_at": "2026-06-08",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
+    },
+    {
+      "source_files": ["инсектициды_и_биозащита_(pest_control).md", "инсектицидное_мыло_(insecticidal_soap).md", "корица_и_алоэ_вера_(cinnamon_&_aloe_vera_gel).md"],
+      "target_draft": "drafts/article_05_pest_control.md",
+      "title": "Война в джунглях: как уничтожить вредителей",
+      "status": "drafted",
+      "created_at": "2026-06-08",
+      "published_at": null,
+      "platforms": {"zen": false, "tg": false}
+    }
+  ]
+}
