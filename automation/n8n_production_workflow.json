@@ -61,7 +61,7 @@
           "parameters": [
             {
               "name": "contents",
-              "value": "=[{\"parts\":[{\"text\":\"Ты эксперт по удержанию внимания в YouTube Shorts на аудиторию США/UK. Ниша: 'Инженерные катастрофы и фейлы истории'. Тема: '\" + $json.Topic + \"'. Напиши сценарий на 45 секунд. Первые 2 секунды - жесткий хук. На 25-й секунде - кульминация. В конце - призыв подписаться. \n\nВЫВЕДИ ОТВЕТ СТРОГО В ФОРМАТЕ JSON, без маркдауна и лишнего текста:\n{\n  \\\"script\\\": \\\"Текст для озвучки (английский)\\\",\n  \\\"prompts\\\": [\\\"промпт 1\\\", \\\"промпт 2\\\", \\\"промпт 3\\\"],\n  \\\"meta\\\": {\\\"tags\\\": [\\\"tag1\\\", \\\"tag2\\\"], \\\"description\\\": \\\"описание\\\"},\n  \\\"CapCut_AI_Instructions\\\": {\n    \\\"voice_settings\\\": \\\"Динамичный американский английский, мужской глубокий голос (например, 'Energetic Male')\\\",\n    \\\"captions_style\\\": \\\"Динамические субтитры, стиль 'Pro' с желтым выделением текущего слова, крупный жирный шрифт (Montserrat Black)\\\",\n    \\\"timeline_markers\\\": [\\\"Смена кадра на 0:02 (после хука)\\\", \\\"Быстрая нарезка с 0:25 до 0:30 (кульминация)\\\"]\n  }\n}\"}]}]"
+              "value": "=[{\"parts\":[{\"text\":\"\u0422\u044b \u044d\u043a\u0441\u043f\u0435\u0440\u0442 \u043f\u043e \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044e \u0432\u043d\u0438\u043c\u0430\u043d\u0438\u044f \u0432 YouTube Shorts \u043d\u0430 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044e \u0421\u0428\u0410/UK. \u041d\u0438\u0448\u0430: '\u0418\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0435 \u043a\u0430\u0442\u0430\u0441\u0442\u0440\u043e\u0444\u044b \u0438 \u0444\u0435\u0439\u043b\u044b \u0438\u0441\u0442\u043e\u0440\u0438\u0438'. \u0422\u0435\u043c\u0430: '\" + $json.Topic + \"'. \u041d\u0430\u043f\u0438\u0448\u0438 \u0441\u0446\u0435\u043d\u0430\u0440\u0438\u0439 \u043d\u0430 45 \u0441\u0435\u043a\u0443\u043d\u0434. \u041f\u0435\u0440\u0432\u044b\u0435 2 \u0441\u0435\u043a\u0443\u043d\u0434\u044b - \u0436\u0435\u0441\u0442\u043a\u0438\u0439 \u0445\u0443\u043a. \u041d\u0430 25-\u0439 \u0441\u0435\u043a\u0443\u043d\u0434\u0435 - \u043a\u0443\u043b\u044c\u043c\u0438\u043d\u0430\u0446\u0438\u044f. \u0412 \u043a\u043e\u043d\u0446\u0435 - \u043f\u0440\u0438\u0437\u044b\u0432 \u043f\u043e\u0434\u043f\u0438\u0441\u0430\u0442\u044c\u0441\u044f. \n\n\u0412\u042b\u0412\u0415\u0414\u0418 \u041e\u0422\u0412\u0415\u0422 \u0421\u0422\u0420\u041e\u0413\u041e \u0412 \u0424\u041e\u0420\u041c\u0410\u0422\u0415 JSON, \u0431\u0435\u0437 \u043c\u0430\u0440\u043a\u0434\u0430\u0443\u043d\u0430 \u0438 \u043b\u0438\u0448\u043d\u0435\u0433\u043e \u0442\u0435\u043a\u0441\u0442\u0430:\n{\n  \\\"script\\\": \\\"\u0422\u0435\u043a\u0441\u0442 \u0434\u043b\u044f \u043e\u0437\u0432\u0443\u0447\u043a\u0438 (\u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439)\\\",\n  \\\"prompts\\\": [\\\"\u043f\u0440\u043e\u043c\u043f\u0442 1\\\", \\\"\u043f\u0440\u043e\u043c\u043f\u0442 2\\\", \\\"\u043f\u0440\u043e\u043c\u043f\u0442 3\\\"],\n  \\\"meta\\\": {\\\"tags\\\": [\\\"tag1\\\", \\\"tag2\\\"], \\\"description\\\": \\\"\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435\\\"},\n  \\\"CapCut_AI_Instructions\\\": {\n    \\\"voice_settings\\\": \\\"\u0414\u0438\u043d\u0430\u043c\u0438\u0447\u043d\u044b\u0439 \u0430\u043c\u0435\u0440\u0438\u043a\u0430\u043d\u0441\u043a\u0438\u0439 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439, \u043c\u0443\u0436\u0441\u043a\u043e\u0439 \u0433\u043b\u0443\u0431\u043e\u043a\u0438\u0439 \u0433\u043e\u043b\u043e\u0441 (\u043d\u0430\u043f\u0440\u0438\u043c\u0435\u0440, 'Energetic Male')\\\",\n    \\\"captions_style\\\": \\\"\u0414\u0438\u043d\u0430\u043c\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u0441\u0443\u0431\u0442\u0438\u0442\u0440\u044b, \u0441\u0442\u0438\u043b\u044c 'Pro' \u0441 \u0436\u0435\u043b\u0442\u044b\u043c \u0432\u044b\u0434\u0435\u043b\u0435\u043d\u0438\u0435\u043c \u0442\u0435\u043a\u0443\u0449\u0435\u0433\u043e \u0441\u043b\u043e\u0432\u0430, \u043a\u0440\u0443\u043f\u043d\u044b\u0439 \u0436\u0438\u0440\u043d\u044b\u0439 \u0448\u0440\u0438\u0444\u0442 (Montserrat Black)\\\",\n    \\\"timeline_markers\\\": [\\\"\u0421\u043c\u0435\u043d\u0430 \u043a\u0430\u0434\u0440\u0430 \u043d\u0430 0:02 (\u043f\u043e\u0441\u043b\u0435 \u0445\u0443\u043a\u0430)\\\", \\\"\u0411\u044b\u0441\u0442\u0440\u0430\u044f \u043d\u0430\u0440\u0435\u0437\u043a\u0430 \u0441 0:25 \u0434\u043e 0:30 (\u043a\u0443\u043b\u044c\u043c\u0438\u043d\u0430\u0446\u0438\u044f)\\\"]\n  }\n}\"}]}]"
             }
           ]
         },
@@ -121,7 +121,7 @@
     {
       "parameters": {
         "chatId": "your_telegram_chat_id",
-        "text": "={{ 'Внимание! Ошибка в конвейере Shorts:\\n' + $json.error.message }}"
+        "text": "={{ '\u0412\u043d\u0438\u043c\u0430\u043d\u0438\u0435! \u041e\u0448\u0438\u0431\u043a\u0430 \u0432 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435 Shorts:\\n' + $json.error.message }}"
       },
       "name": "Telegram Alert",
       "type": "n8n-nodes-base.telegram",
@@ -136,6 +136,42 @@
           "name": "Telegram Bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "prompts",
+        "options": {}
+      },
+      "name": "Split Prompts",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        900,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8188/prompt",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ { \"3\": { \"inputs\": { \"seed\": Math.floor(Math.random() * 10000000000), \"steps\": 4, \"cfg\": 1.0, \"sampler_name\": \"euler\", \"scheduler\": \"simple\", \"denoise\": 1.0, \"model\": [ \"11\", 0 ], \"positive\": [ \"6\", 0 ], \"negative\": [ \"7\", 0 ], \"latent_image\": [ \"5\", 0 ] }, \"class_type\": \"KSampler\", \"_meta\": { \"title\": \"KSampler\" } }, \"5\": { \"inputs\": { \"width\": 1080, \"height\": 1920, \"batch_size\": 1 }, \"class_type\": \"EmptyLatentImage\", \"_meta\": { \"title\": \"Empty Latent Image\" } }, \"6\": { \"inputs\": { \"text\": $json[\"prompts\"], \"clip\": [ \"12\", 0 ] }, \"class_type\": \"CLIPTextEncode\", \"_meta\": { \"title\": \"CLIP Text Encode (Prompt)\" } }, \"7\": { \"inputs\": { \"text\": \"\", \"clip\": [ \"12\", 0 ] }, \"class_type\": \"CLIPTextEncode\", \"_meta\": { \"title\": \"CLIP Text Encode (Prompt)\" } }, \"8\": { \"inputs\": { \"samples\": [ \"3\", 0 ], \"vae\": [ \"10\", 0 ] }, \"class_type\": \"VAEDecode\", \"_meta\": { \"title\": \"VAE Decode\" } }, \"9\": { \"inputs\": { \"filename_prefix\": \"ComfyUI_Flux_\" + Date.now(), \"images\": [ \"8\", 0 ] }, \"class_type\": \"SaveImage\", \"_meta\": { \"title\": \"Save Image\" } }, \"10\": { \"inputs\": { \"vae_name\": \"ae.sft\" }, \"class_type\": \"VAELoader\", \"_meta\": { \"title\": \"Load VAE\" } }, \"11\": { \"inputs\": { \"unet_name\": \"flux1-schnell-fp8.safetensors\", \"weight_dtype\": \"fp8_e4m3fn\" }, \"class_type\": \"UNETLoader\", \"_meta\": { \"title\": \"Load Diffusion Model\" } }, \"12\": { \"inputs\": { \"clip_name1\": \"t5xxl_fp8_e4m3fn.safetensors\", \"clip_name2\": \"clip_l.safetensors\", \"type\": \"flux\" }, \"class_type\": \"DualCLIPLoader\", \"_meta\": { \"title\": \"DualCLIPLoader\" } } } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send to ComfyUI (Localhost)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        500
+      ]
     }
   ],
   "connections": {
@@ -179,6 +215,11 @@
             "node": "Local File System",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Split Prompts",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -188,6 +229,17 @@
         [
           {
             "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Prompts": {
+      "main": [
+        [
+          {
+            "node": "Send to ComfyUI (Localhost)",
             "type": "main",
             "index": 0
           }
