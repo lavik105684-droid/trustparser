@@ -1,0 +1,143 @@
+{
+  "name": "Faceless YouTube Shorts Conveyor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{$env.GOOGLE_SHEETS_DOCUMENT_ID}}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{$env.GOOGLE_SHEETS_SHEET_NAME}}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "={{$env.GOOGLE_SHEETS_CREDENTIALS_ID}}",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "=[{\"parts\":[{\"text\":\"Ты эксперт по удержанию внимания в YouTube Shorts на аудиторию США/UK. Ниша: 'Инженерные катастрофы и фейлы истории'. Тема: '\" + $json.Topic + \"'. Напиши сценарий на 45 секунд. Первые 2 секунды - жесткий хук. На 25-й секунде - кульминация. В конце - призыв подписаться. \n\nВЫВЕДИ ОТВЕТ СТРОГО В ФОРМАТЕ JSON, без маркдауна и лишнего текста:\n{\n  \\\"script\\\": \\\"Текст для озвучки (английский)\\\",\n  \\\"prompts\\\": [\\\"промпт 1\\\", \\\"промпт 2\\\", \\\"промпт 3\\\"],\n  \\\"meta\\\": {\\\"tags\\\": [\\\"tag1\\\", \\\"tag2\\\"], \\\"description\\\": \\\"описание\\\"},\n  \\\"CapCut_AI_Instructions\\\": {\n    \\\"voice_settings\\\": \\\"Динамичный американский английский, мужской глубокий голос (например, 'Energetic Male')\\\",\n    \\\"captions_style\\\": \\\"Динамические субтитры, стиль 'Pro' с желтым выделением текущего слова, крупный жирный шрифт (Montserrat Black)\\\",\n    \\\"timeline_markers\\\": [\\\"Смена кадра на 0:02 (после хука)\\\", \\\"Быстрая нарезка с 0:25 до 0:30 (кульминация)\\\"]\n  }\n}\"}]}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Gemini API Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToParse": "data",
+        "options": {}
+      },
+      "name": "JSON Parse",
+      "type": "n8n-nodes-base.jsonParse",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Gemini API Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API Request": {
+      "main": [
+        [
+          {
+            "node": "JSON Parse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "faceless-conveyor-v1"
+}
