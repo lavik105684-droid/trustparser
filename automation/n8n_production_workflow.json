@@ -172,6 +172,41 @@
         1100,
         500
       ]
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "name": "Wait for ComfyUI",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        500
+      ],
+      "webhookId": "wait-node-id-12345"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "Batch generation complete. Images ready for CapCut."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Final Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        500
+      ]
     }
   ],
   "connections": {
@@ -240,6 +275,28 @@
         [
           {
             "node": "Send to ComfyUI (Localhost)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to ComfyUI (Localhost)": {
+      "main": [
+        [
+          {
+            "node": "Wait for ComfyUI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for ComfyUI": {
+      "main": [
+        [
+          {
+            "node": "Final Log",
             "type": "main",
             "index": 0
           }
