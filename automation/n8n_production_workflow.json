@@ -1,0 +1,203 @@
+{
+  "name": "Faceless YouTube Shorts Conveyor (Production)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "your_google_sheet_id",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        300,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google_sheets_creds_id",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "=[{\"parts\":[{\"text\":\"Ты эксперт по удержанию внимания в YouTube Shorts на аудиторию США/UK. Ниша: 'Инженерные катастрофы и фейлы истории'. Тема: '\" + $json.Topic + \"'. Напиши сценарий на 45 секунд. Первые 2 секунды - жесткий хук. На 25-й секунде - кульминация. В конце - призыв подписаться. \n\nВЫВЕДИ ОТВЕТ СТРОГО В ФОРМАТЕ JSON, без маркдауна и лишнего текста:\n{\n  \\\"script\\\": \\\"Текст для озвучки (английский)\\\",\n  \\\"prompts\\\": [\\\"промпт 1\\\", \\\"промпт 2\\\", \\\"промпт 3\\\"],\n  \\\"meta\\\": {\\\"tags\\\": [\\\"tag1\\\", \\\"tag2\\\"], \\\"description\\\": \\\"описание\\\"},\n  \\\"CapCut_AI_Instructions\\\": {\n    \\\"voice_settings\\\": \\\"Динамичный американский английский, мужской глубокий голос (например, 'Energetic Male')\\\",\n    \\\"captions_style\\\": \\\"Динамические субтитры, стиль 'Pro' с желтым выделением текущего слова, крупный жирный шрифт (Montserrat Black)\\\",\n    \\\"timeline_markers\\\": [\\\"Смена кадра на 0:02 (после хука)\\\", \\\"Быстрая нарезка с 0:25 до 0:30 (кульминация)\\\"]\n  }\n}\"}]}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Gemini API Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "gemini_api_header_auth",
+          "name": "Gemini API Auth (x-goog-api-key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  // Clean potential markdown blocks like ```json ... ```\n  let rawStr = $input.item.json.data.candidates[0].content.parts[0].text;\n  rawStr = rawStr.replace(/^```json\\n/, '').replace(/\\n```$/, '');\n  \n  const parsed = JSON.parse(rawStr);\n  return { json: parsed };\n} catch (error) {\n  throw new Error('Failed to parse Gemini output as JSON: ' + error.message);\n}"
+      },
+      "name": "Clean and Parse JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/data/shorts/{{$json.meta.tags[0]}}_{{Date.now()}}.json",
+        "dataPropertyName": "json",
+        "options": {}
+      },
+      "name": "Local File System",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "your_telegram_chat_id",
+        "text": "={{ 'Внимание! Ошибка в конвейере Shorts:\\n' + $json.error.message }}"
+      },
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        300,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot_creds",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Gemini API Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API Request": {
+      "main": [
+        [
+          {
+            "node": "Clean and Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean and Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Local File System",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "faceless-production-v2"
+}
