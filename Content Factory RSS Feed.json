@@ -1,0 +1,800 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "numberInputs": 7
+      },
+      "id": "147a7e43-4b00-448f-ba5c-6c94e16ec443",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        576,
+        400
+      ],
+      "typeVersion": 3.1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "e27b7be4-20fd-48c3-9a53-763fc425af45",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -896,
+        464
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "dcb25636-df08-4668-ae1b-ddd63eca8636",
+              "name": "from",
+              "value": "dev-to",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f61f97f-6b83-4d23-adec-e26818bf849e",
+      "name": "Filter Fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        -112
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "05430bd0-fb6b-4133-908e-351a56760ecd",
+              "name": "from",
+              "value": "tech-crunch",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d62c0a63-f165-4796-9e7e-d62503773bdb",
+      "name": "Filter Fields 3",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        80
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "f54fca76-e862-445e-b1f3-ee4726a4f1e2",
+              "name": "from",
+              "value": "the-hacker-news",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb0c6bd3-d082-45af-af57-a6df6ba3d049",
+      "name": "Filter Fields 4",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        272
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "226faa3c-80d5-4f91-bf6a-0f133afa974d",
+              "name": "from",
+              "value": "openai",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6eed1bb-0d59-41db-9968-769efce7e485",
+      "name": "Filter Fields 5",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        464
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "14769dcd-ddf3-447f-97fa-dea54303b82e",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "37531ab0-2174-4e3b-8faf-414268ba0d88",
+              "name": "from",
+              "value": "aws",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "98dd2236-a578-4b97-8c33-a43686aa1245",
+      "name": "Filter Fields 6",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        656
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "d33557e1-2f4a-452f-ab4a-03afd4950da0",
+              "name": "from",
+              "value": "n8n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "035bb499-c3e4-4fb3-a85c-3e172c5e546f",
+      "name": "Filter Fields 7",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        848
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2ffe594-180d-4e1d-b869-8056ac67015d",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "id": "87c5a171-9ab9-4043-a72a-32aec218fe63",
+              "name": "pubDate",
+              "type": "string",
+              "value": "={{ $json.pubDate }}"
+            },
+            {
+              "id": "978b05c9-6e6b-4a18-bc06-4de785b19413",
+              "name": "link",
+              "type": "string",
+              "value": "={{ $json.link }}"
+            },
+            {
+              "id": "199a5920-72a3-470e-9adf-8252f6ebb37a",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "id": "ee27dd79-f986-4cc9-827f-1a3e4df3ff68",
+              "name": "from",
+              "value": "github",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a2eb2e61-7916-4a9e-ad17-abdccbc3c6bb",
+      "name": "Filter Fields 8",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        64,
+        1040
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.all();\nconst now = new Date();\n\n// Keep only items from the last 24 hours\nconst last24HoursData = data.filter(item => {\n  const itemDate = new Date(item.json.pubDate); // match your data path\n  const diffMs = now - itemDate;\n  const diffHours = diffMs / (1000 * 60 * 60);\n  return diffHours <= 24; // only keep items within 24 hours\n});\n\nreturn last24HoursData;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        480
+      ],
+      "id": "10c81909-4f79-433b-8cb9-cd2826e28d0a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://dev.to/feed",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "7a2abde9-93e3-4a43-9869-c87e34edf089",
+      "name": "Dev.to Community Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        -112
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "78c8775f-455d-4f19-b880-bb7469f5c1a6",
+      "name": "TechCrunch News Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        80
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/TheHackersNews",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "49b3c10a-2295-4b47-97c3-8aeaa30f0b74",
+      "name": "The Hacker News Security Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        272
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "notes": "*Not to be confused with \"Hacker News\" from ycombinator."
+    },
+    {
+      "parameters": {
+        "url": "https://openai.com/news/rss.xml",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "e12b1979-0fa2-4c5f-8094-50f8b8f418da",
+      "name": "OpenAI Official Blog Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        464
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/AmazonWebServicesBlog",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "5d72c896-675c-4357-b9b8-0dd89fc8fd82",
+      "name": "AWS Official Blog Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        656
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://blog.n8n.io/rss/",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "8ec217d3-baca-485c-b54d-1850651832d2",
+      "name": "n8n Official Blog Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        848
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://github.blog/feed/",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "id": "2a6d5df3-5e4a-40dd-ba09-6ed461bfd547",
+      "name": "Github Official Blog Feed",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        -160,
+        1040
+      ],
+      "typeVersion": 1.1,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "tableId": "posts",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.title }}"
+            },
+            {
+              "fieldId": "content",
+              "fieldValue": "={{ $json.content }}"
+            },
+            {
+              "fieldId": "link",
+              "fieldValue": "={{ $json.link }}"
+            },
+            {
+              "fieldId": "pub_date",
+              "fieldValue": "={{ $json.pubDate }}"
+            },
+            {
+              "fieldId": "user_id",
+              "fieldValue": "cfdb1e8a-421b-4d50-a0c0-285beb2dc2c3"
+            },
+            {
+              "fieldId": "from",
+              "fieldValue": "={{ $json.from }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        480
+      ],
+      "id": "356d29e3-e8f1-472b-b69f-7c7f906cf9db",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "jgT4AlXfqTlfxvdY",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items\nconst items = $input.all();\n\n// Process each item and return results\nconst results = items.map(item => {\n    // Get the raw HTML content - adjust the field name if needed\n    // If your content is in a field called 'content', use that\n    const rawHtml = item.json.content || item.json.data || '';\n    \n    // Skip if no content\n    if (!rawHtml) {\n        return { \n            json: { \n                ...item.json,\n                cleanedText: '' \n            } \n        };\n    }\n    \n    // 1. Remove script, style, SVG, and other non-content tags and their content\n    let cleanedText = rawHtml.replace(/<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi, ' ');\n    cleanedText = cleanedText.replace(/<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\\/style>/gi, ' ');\n    cleanedText = cleanedText.replace(/<svg\\b[^<]*(?:(?!<\\/svg>)<[^<]*)*<\\/svg>/gi, ' ');\n    cleanedText = cleanedText.replace(/<noscript\\b[^<]*(?:(?!<\\/noscript>)<[^<]*)*<\\/noscript>/gi, ' ');\n    \n    // 2. Remove all other HTML tags, converting them to spaces\n    cleanedText = cleanedText.replace(/<[^>]*>/g, ' ');\n    \n    // 3. Decode common HTML entities\n    cleanedText = cleanedText.replace(/&nbsp;/g, ' ')\n                             .replace(/&amp;/g, '&')\n                             .replace(/&lt;/g, '<')\n                             .replace(/&gt;/g, '>')\n                             .replace(/&quot;/g, '\"')\n                             .replace(/&#039;/g, \"'\");\n    \n    // 4. Collapse multiple whitespace characters into a single space\n    cleanedText = cleanedText.replace(/\\s+/g, ' ');\n    \n    // 5. Trim leading/trailing whitespace\n    cleanedText = cleanedText.trim();\n    \n    // Return the original item data PLUS the cleaned text\n    // This preserves all original fields (title, pubDate, link, etc.)\n    return { \n        json: { \n            ...item.json,\n            content:cleanedText \n        } \n    };\n});\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        480
+      ],
+      "id": "b412a8ae-22a2-48f6-88a3-0fe489098082",
+      "name": "Cleaning html to text"
+    }
+  ],
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Dev.to Community Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TechCrunch News Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "The Hacker News Security Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "OpenAI Official Blog Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AWS Official Blog Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "n8n Official Blog Feed",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Github Official Blog Feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Fields 3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter Fields 4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Filter Fields 5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Filter Fields 6": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Filter Fields 7": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Filter Fields 8": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Cleaning html to text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dev.to Community Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TechCrunch News Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "The Hacker News Security Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Official Blog Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS Official Blog Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Official Blog Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github Official Blog Feed": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields 8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleaning html to text": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5fb562ea0f9026abe7e8f315ec46894e8801411ce3db851fdbe45168e485acda"
+  }
+}
