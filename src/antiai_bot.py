@@ -1,12 +1,12 @@
 import requests
 import json
-import re
+import time
 
 # 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (Конфигурация)
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY"
-TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-TELEGRAM_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"
+GEMINI_API_KEY = "[твой_ключ]"
+OPENROUTER_API_KEY = "[твой_токен]"
+TELEGRAM_BOT_TOKEN = "[токен_бота]"
+TELEGRAM_CHAT_ID = "[ID]"
 
 def clean_and_parse_json(raw_text):
     """
@@ -56,8 +56,18 @@ def main():
         }
 
         gemini_headers = {"Content-Type": "application/json"}
-        gemini_resp = requests.post(gemini_url, json=gemini_payload, headers=gemini_headers)
-        gemini_resp.raise_for_status()
+
+        # Retry logic for Gemini
+        for attempt in range(3):
+            try:
+                gemini_resp = requests.post(gemini_url, json=gemini_payload, headers=gemini_headers, timeout=30)
+                gemini_resp.raise_for_status()
+                break
+            except requests.exceptions.RequestException as e:
+                print(f"Попытка {attempt+1} не удалась (Gemini): {e}")
+                if attempt == 2:
+                    raise
+                time.sleep(2)
 
         gemini_data = gemini_resp.json()
         try:
@@ -97,8 +107,17 @@ def main():
             "prompt": cover_prompt
         }
 
-        cover_resp = requests.post(openrouter_url, json=cover_payload, headers=openrouter_headers)
-        cover_resp.raise_for_status()
+        # Retry logic for OpenRouter Cover
+        for attempt in range(3):
+            try:
+                cover_resp = requests.post(openrouter_url, json=cover_payload, headers=openrouter_headers, timeout=30)
+                cover_resp.raise_for_status()
+                break
+            except requests.exceptions.RequestException as e:
+                print(f"Попытка {attempt+1} не удалась (OpenRouter обложка): {e}")
+                if attempt == 2:
+                    raise
+                time.sleep(2)
         cover_url = cover_resp.json()["data"][0]["url"]
 
         # Запрос 2: Слайд боли
@@ -110,8 +129,17 @@ def main():
             "prompt": pain_prompt
         }
 
-        pain_resp = requests.post(openrouter_url, json=pain_payload, headers=openrouter_headers)
-        pain_resp.raise_for_status()
+        # Retry logic for OpenRouter Pain
+        for attempt in range(3):
+            try:
+                pain_resp = requests.post(openrouter_url, json=pain_payload, headers=openrouter_headers, timeout=30)
+                pain_resp.raise_for_status()
+                break
+            except requests.exceptions.RequestException as e:
+                print(f"Попытка {attempt+1} не удалась (OpenRouter слайд боли): {e}")
+                if attempt == 2:
+                    raise
+                time.sleep(2)
         pain_url = pain_resp.json()["data"][0]["url"]
 
         print("Изображения сгенерированы.")
@@ -126,12 +154,20 @@ def main():
 
         telegram_payload = {
             "chat_id": TELEGRAM_CHAT_ID,
-            "text": message_text,
-            "parse_mode": "HTML"
+            "text": message_text
         }
 
-        tg_resp = requests.post(telegram_url, json=telegram_payload)
-        tg_resp.raise_for_status()
+        # Retry logic for Telegram
+        for attempt in range(3):
+            try:
+                tg_resp = requests.post(telegram_url, json=telegram_payload, timeout=30)
+                tg_resp.raise_for_status()
+                break
+            except requests.exceptions.RequestException as e:
+                print(f"Попытка {attempt+1} не удалась (Telegram): {e}")
+                if attempt == 2:
+                    raise
+                time.sleep(2)
 
         print("Пост успешно отправлен в Telegram!")
 
