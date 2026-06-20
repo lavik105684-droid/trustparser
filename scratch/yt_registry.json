@@ -1222,5 +1222,11 @@
     "url": "https://www.youtube.com/watch?v=bXVkS7cff00",
     "is_short": false,
     "status": "pending_upload"
+  },
+  "U1AaYq4Z7jg": {
+    "title": "This AI Creates Complete YouTube Shorts Automatically",
+    "url": "https://www.youtube.com/watch?v=U1AaYq4Z7jg",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
