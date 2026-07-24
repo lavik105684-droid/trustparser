@@ -1522,5 +1522,17 @@
     "url": "https://www.youtube.com/watch?v=CLDFUJEzAMk",
     "is_short": false,
     "status": "pending_upload"
+  },
+  "HeWRwSBGWfI": {
+    "title": "I Built a FREE Workflow for Viral Economics Explained Videos Using Claude AI",
+    "url": "https://www.youtube.com/watch?v=HeWRwSBGWfI",
+    "is_short": true,
+    "status": "pending_upload"
+  },
+  "LsNldi6oUBs": {
+    "title": "How I Create Bulk AI Videos with Google VEO 3 (Automated Workflow)",
+    "url": "https://www.youtube.com/watch?v=LsNldi6oUBs",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
