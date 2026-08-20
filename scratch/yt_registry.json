@@ -1702,5 +1702,11 @@
     "url": "https://www.youtube.com/watch?v=DMj9WwGQ4r0",
     "is_short": false,
     "status": "pending_upload"
+  },
+  "GCD1DF3dksg": {
+    "title": "Bulk Create Quiz Videos Using Canva and AI",
+    "url": "https://www.youtube.com/watch?v=GCD1DF3dksg",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
