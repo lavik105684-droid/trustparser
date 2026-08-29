@@ -1744,5 +1744,11 @@
     "url": "https://www.youtube.com/watch?v=f3kg6wRKjY0",
     "is_short": true,
     "status": "pending_upload"
+  },
+  "qhbo4piExOc": {
+    "title": "The #1 Claude AI Side Hustle For People Over 50",
+    "url": "https://www.youtube.com/watch?v=qhbo4piExOc",
+    "is_short": false,
+    "status": "pending_upload"
   }
 }
