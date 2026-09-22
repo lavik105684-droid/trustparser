@@ -1996,5 +1996,11 @@
     "url": "https://www.youtube.com/watch?v=LlhTEttKcwQ",
     "is_short": false,
     "status": "pending_upload"
+  },
+  "-4B8_TjUlcQ": {
+    "title": "How to Make YouTube Shorts with AI (Full Guide)",
+    "url": "https://www.youtube.com/watch?v=-4B8_TjUlcQ",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
