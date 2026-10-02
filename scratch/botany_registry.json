@@ -3238,5 +3238,11 @@
     "url": "https://www.youtube.com/watch?v=rq6XYhu8gl0",
     "is_short": true,
     "status": "pending_upload"
+  },
+  "cKLkCmEWiLA": {
+    "title": "YouTube Video (Автопоиск)",
+    "url": "https://www.youtube.com/watch?v=cKLkCmEWiLA",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
