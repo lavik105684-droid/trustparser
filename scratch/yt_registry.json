@@ -2218,5 +2218,11 @@
     "url": "https://www.youtube.com/watch?v=qD7Fb9sC1Jw",
     "is_short": false,
     "status": "pending_upload"
+  },
+  "VVU3GLgk-R0": {
+    "title": "How to Make YouTube Shorts with AI",
+    "url": "https://www.youtube.com/watch?v=VVU3GLgk-R0",
+    "is_short": true,
+    "status": "pending_upload"
   }
 }
